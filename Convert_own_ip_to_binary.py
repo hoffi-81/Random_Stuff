@@ -6,11 +6,14 @@ def get_ip():
      return s.getsockname()[0] 
      s.close()
 
-def convert_to_ip(binary_array):    
+def convert_to_binary_ip_form(binary_array):    
      binary_string = ''.join(binary_array)
      octets = [binary_string[i:i+8] for i in range(0, 32, 8)]
-     binary_ip = "{}.{}.{}.{}".format(octets[0],octets[1],octets[2],octets[3])
-     return binary_ip
+     binary_ip = "{} {} . {} {} . {} {} . {} {}".format(octets[0][:4], octets[0][4:],
+                                                  octets[1][:4], octets[1][4:],
+                                                  octets[2][:4], octets[2][4:],
+                                                  octets[3][:4], octets[3][4:])
+     return print(binary_ip)
 
 
 
@@ -29,4 +32,4 @@ for oktet in splittet_str_ip:
           else:
                Binary_array.append("0")
 
-print(convert_to_ip(Binary_array))
+convert_to_binary_ip_form(Binary_array)
