@@ -2,7 +2,8 @@ import spotipy
 from dotenv import load_dotenv
 from spotipy.oauth2 import SpotifyOAuth
 import os
-from flask import Flask, jsonify, render_template
+import time
+import pywinctl as pwc
 
 
 load_dotenv()
@@ -10,7 +11,7 @@ load_dotenv()
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
 
-scopes = ["user-read-playback-state"]
+scopes = ["user-read-currently-playing"]
 
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id,
                                                client_secret=client_secret,
@@ -28,12 +29,17 @@ def get_currently_playing():
 
 
 def update_song():
-    current_song = get_currently_playing()["song_title"]
-    print(current_song)
-    while True:
-        temp_song = get_currently_playing()["song_title"]
-        if temp_song != current_song:
-            print(temp_song)
-            current_song = temp_song
+    try:
+        current_song = get_currently_playing()
+        print(current_song["song_title"],current_song["image_url"])
+        while True:
+            time.sleep(0.2)
+            temp_song = pwc.getAllAppsWindowsTitles()["Spotify.exe"][0]
+            if current_song["song_title"] not in temp_song:
+                now_song  = get_currently_playing()
+                print(now_song["song_title"],now_song["image_url"])
+                current_song = now_song
+    except:
+        print("No Song is currently played over Spotify")
 
 update_song()
